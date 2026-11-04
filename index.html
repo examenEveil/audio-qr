@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🎂</title>
+<title>Audio</title>
 <style>
   :root {
     --bg:#fff7ed; --ink:#3b1d0a; --muted:#8a6a52; --accent:#f97316; --track:#fed7aa;
-    --play-bg:#c2410c; --play-ink:#ffffff; --play-muted:rgba(255,255,255,0.85);
+    --play-bg:#c2410c; --play-ink:#ffffff;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg:#1c1209; --ink:#ffedd5; --muted:#c9a98c; --accent:#fb923c; --track:#4a2c12;
-      --play-bg:#fb923c; --play-ink:#1c1209; --play-muted:rgba(28,18,9,0.75);
+      --play-bg:#fb923c; --play-ink:#1c1209;
     }
   }
   * { box-sizing: border-box; }
@@ -20,11 +20,10 @@
   body {
     background: var(--bg); color: var(--ink);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    display: flex; justify-content: center; padding: 40px 16px;
+    display: flex; justify-content: center; padding: 56px 16px 40px;
   }
   main { width: 100%; max-width: 420px; text-align: center; }
-  .emoji { font-size: 72px; line-height: 1; margin-bottom: 12px; }
-  .hint { color: var(--muted); margin: 0; font-size: 16px; }
+  .hint { color: var(--muted); margin: 0; font-size: 17px; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
   .item {
     border: 0; border-radius: 18px; background: var(--track); color: var(--ink);
@@ -45,60 +44,39 @@
   #fill { height: 100%; width: 0%; background: var(--accent); }
   .times { display: flex; justify-content: space-between; margin-top: 8px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
   #error { display: none; margin-top: 16px; color: var(--play-bg); }
-
-  .reveal-box { display: grid; place-items: center; margin-top: 32px; min-height: 84px; }
-  .reveal-box > * { grid-area: 1 / 1; }
-  .ghost {
-    font: inherit; font-size: 18px; font-weight: 600; color: var(--ink);
-    background: transparent; border: 2px solid var(--accent); border-radius: 999px;
-    padding: 14px 26px; cursor: pointer; -webkit-tap-highlight-color: transparent;
-    transition: opacity 0.3s ease, transform 0.12s ease;
-  }
-  .ghost:active { transform: scale(0.97); }
-  .ghost:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
-  .ghost.gone { opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s linear 0.3s; }
-  .answer {
-    text-align: center; font-size: 28px; font-weight: 700; line-height: 1.2;
-    opacity: 0; visibility: hidden; transform: translateY(6px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .answer.show { opacity: 1; visibility: visible; transform: none; }
-  .answer small { display: block; margin-top: 4px; font-size: 15px; font-weight: 400; color: var(--muted); }
-
 </style>
 </head>
 <body>
 <main>
-  <div class="emoji" aria-hidden="true">🎂</div>
   <p class="hint">Appuie sur un numéro et devine la langue</p>
 
   <div class="grid">
-    <button class="item" type="button" data-file="Anglais.mp3" data-native="English" data-fr="Anglais" aria-label="Version 1">
+    <button class="item" type="button" data-file="Anglais.mp3" aria-label="Version 1">
       <span class="num">1</span>
       <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
     </button>
-    <button class="item" type="button" data-file="Chinois.mp3" data-native="中文" data-fr="Chinois" aria-label="Version 2">
+    <button class="item" type="button" data-file="Chinois.mp3" aria-label="Version 2">
       <span class="num">2</span>
       <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
     </button>
-    <button class="item" type="button" data-file="Italien.mp3" data-native="Italiano" data-fr="Italien" aria-label="Version 3">
+    <button class="item" type="button" data-file="Italien.mp3" aria-label="Version 3">
       <span class="num">3</span>
       <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
     </button>
-    <button class="item" type="button" data-file="Swahili.mp3" data-native="Kiswahili" data-fr="Swahili" aria-label="Version 4">
+    <button class="item" type="button" data-file="Swahili.mp3" aria-label="Version 4">
       <span class="num">4</span>
       <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
     </button>
-    <button class="item" type="button" data-file="Turc.mp3" data-native="Türkçe" data-fr="Turc" aria-label="Version 5">
+    <button class="item" type="button" data-file="Turc.mp3" aria-label="Version 5">
       <span class="num">5</span>
       <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
     </button>
-    <button class="item" type="button" data-file="Ukraine.mp3" data-native="Українська" data-fr="Ukrainien" aria-label="Version 6">
+    <button class="item" type="button" data-file="Ukraine.mp3" aria-label="Version 6">
       <span class="num">6</span>
       <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
@@ -108,10 +86,6 @@
   <div id="panel">
     <div id="bar" role="progressbar" aria-label="Progression"><div id="fill"></div></div>
     <div class="times"><span id="cur">0:00</span><span id="dur">--:--</span></div>
-    <div class="reveal-box">
-      <button id="revealBtn" class="ghost" type="button">Révéler la langue</button>
-      <div id="answer" class="answer" aria-hidden="true" aria-live="polite"></div>
-    </div>
   </div>
   <p id="error">Impossible de lire l'audio. Vérifie ta connexion et réessaie.</p>
 
@@ -128,8 +102,6 @@
   var cur = document.getElementById('cur');
   var dur = document.getElementById('dur');
   var err = document.getElementById('error');
-  var revealBtn = document.getElementById('revealBtn');
-  var answer = document.getElementById('answer');
   var current = null;
 
   function fmt(s) {
@@ -142,12 +114,6 @@
   function play() {
     var p = audio.play();
     if (p && p.catch) p.catch(showErr);
-  }
-  function hideAnswer() {
-    revealBtn.classList.remove('gone');
-    revealBtn.disabled = false;
-    answer.classList.remove('show');
-    answer.setAttribute('aria-hidden', 'true');
   }
 
   items.forEach(function (btn) {
@@ -163,23 +129,9 @@
       cur.textContent = '0:00';
       dur.textContent = '--:--';
       panel.style.display = 'block';
-      hideAnswer();
       audio.src = btn.getAttribute('data-file');
       play();
     });
-  });
-
-  revealBtn.addEventListener('click', function () {
-    if (!current) return;
-    answer.innerHTML = '';
-    answer.appendChild(document.createTextNode(current.getAttribute('data-native')));
-    var small = document.createElement('small');
-    small.textContent = current.getAttribute('data-fr');
-    answer.appendChild(small);
-    revealBtn.classList.add('gone');
-    revealBtn.disabled = true;
-    answer.classList.add('show');
-    answer.removeAttribute('aria-hidden');
   });
 
   audio.addEventListener('play', function () { if (current) current.classList.add('playing'); });

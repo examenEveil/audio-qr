@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🎂</title>
+<title>Audio</title>
 <style>
   :root {
     --bg: #fff7ed; --ink: #3b1d0a; --muted: #8a6a52;
@@ -23,9 +23,8 @@
     display: flex; align-items: center; justify-content: center; padding: 24px 16px;
   }
   main { width: 100%; max-width: 420px; text-align: center; }
-  .emoji { font-size: 80px; line-height: 1; margin-bottom: 40px; }
   #play {
-    width: 128px; height: 128px; border-radius: 50%; border: 0;
+    width: 144px; height: 144px; border-radius: 50%; border: 0;
     background: var(--accent); color: #fff; cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center;
     box-shadow: 0 10px 28px rgba(249, 115, 22, 0.35);
@@ -33,11 +32,11 @@
   }
   #play:active { transform: scale(0.95); }
   #play:focus-visible { outline: 4px solid var(--accent-dark); outline-offset: 4px; }
-  #play svg { width: 56px; height: 56px; fill: currentColor; }
+  #play svg { width: 64px; height: 64px; fill: currentColor; }
   #icon-pause { display: none; }
   #play.playing #icon-play { display: none; }
   #play.playing #icon-pause { display: block; }
-  .progress { margin-top: 40px; }
+  .progress { margin-top: 48px; }
   #bar { width: 100%; height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; cursor: pointer; }
   #fill { height: 100%; width: 0%; background: var(--accent); }
   .times {
@@ -45,32 +44,10 @@
     font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums;
   }
   #error { color: var(--accent-dark); margin-top: 20px; display: none; }
-
-  .reveal-box { display: grid; place-items: center; margin-top: 32px; min-height: 84px; }
-  .reveal-box > * { grid-area: 1 / 1; }
-  .ghost {
-    font: inherit; font-size: 18px; font-weight: 600; color: var(--ink);
-    background: transparent; border: 2px solid var(--accent); border-radius: 999px;
-    padding: 14px 26px; cursor: pointer; -webkit-tap-highlight-color: transparent;
-    transition: opacity 0.3s ease, transform 0.12s ease;
-  }
-  .ghost:active { transform: scale(0.97); }
-  .ghost:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
-  .ghost.gone { opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s linear 0.3s; }
-  .answer {
-    text-align: center; font-size: 28px; font-weight: 700; line-height: 1.2;
-    opacity: 0; visibility: hidden; transform: translateY(6px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .answer.show { opacity: 1; visibility: visible; transform: none; }
-  .answer small { display: block; margin-top: 4px; font-size: 15px; font-weight: 400; color: var(--muted); }
-
 </style>
 </head>
 <body>
 <main>
-  <div class="emoji" aria-hidden="true">🎂</div>
-
   <button id="play" type="button" aria-label="Lecture">
     <svg id="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
     <svg id="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
@@ -81,11 +58,6 @@
     <div class="times"><span id="cur">0:00</span><span id="dur">--:--</span></div>
   </div>
   <p id="error">Impossible de lire l'audio. Vérifie ta connexion et réessaie.</p>
-
-  <div class="reveal-box">
-    <button id="revealBtn" class="ghost" type="button">Révéler la langue</button>
-    <div id="answer" class="answer" aria-hidden="true" aria-live="polite">Italiano<small>Italien</small></div>
-  </div>
 
   <audio id="audio" src="Italien.mp3" preload="metadata"></audio>
   <noscript><audio controls src="Italien.mp3"></audio></noscript>
@@ -100,8 +72,6 @@
   var cur = document.getElementById('cur');
   var dur = document.getElementById('dur');
   var err = document.getElementById('error');
-  var revealBtn = document.getElementById('revealBtn');
-  var answer = document.getElementById('answer');
 
   function fmt(s) {
     if (!isFinite(s)) return '--:--';
@@ -144,13 +114,6 @@
     if (!audio.duration) return;
     var rect = bar.getBoundingClientRect();
     audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
-  });
-
-  revealBtn.addEventListener('click', function () {
-    revealBtn.classList.add('gone');
-    revealBtn.disabled = true;
-    answer.classList.add('show');
-    answer.removeAttribute('aria-hidden');
   });
 })();
 </script>
