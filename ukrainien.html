@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Birthday</title>
+<style>
+  :root {
+    --bg: #fff7ed;
+    --ink: #3b1d0a;
+    --muted: #8a6a52;
+    --accent: #f97316;
+    --accent-dark: #c2410c;
+    --track: #fed7aa;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1209;
+      --ink: #ffedd5;
+      --muted: #c9a98c;
+      --accent: #fb923c;
+      --accent-dark: #fdba74;
+      --track: #4a2c12;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  main {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+  }
+  .emoji { font-size: 56px; line-height: 1; margin-bottom: 12px; }
+  h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .hint { color: var(--ink); margin: 0 0 36px; font-size: 26px; font-weight: 700; line-height: 1.2;
+    min-height: 56px; opacity: 0; transform: translateY(6px);
+    transition: opacity 0.7s ease, transform 0.7s ease; }
+  .hint.show { opacity: 1; transform: none; }
+  .hint small { display: block; margin-top: 4px; font-size: 15px; font-weight: 400; color: var(--muted); }
+  #play {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 28px rgba(249, 115, 22, 0.35);
+    transition: transform 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #play:active { transform: scale(0.95); }
+  #play:focus-visible { outline: 4px solid var(--accent-dark); outline-offset: 4px; }
+  #play svg { width: 56px; height: 56px; fill: currentColor; }
+  #icon-pause { display: none; }
+  #play.playing #icon-play { display: none; }
+  #play.playing #icon-pause { display: block; }
+  .progress { margin-top: 40px; }
+  #bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--track);
+    overflow: hidden;
+    cursor: pointer;
+  }
+  #fill { height: 100%; width: 0%; background: var(--accent); }
+  .times {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  #error { color: var(--accent-dark); margin-top: 20px; display: none; }
+</style>
+</head>
+<body>
+<main>
+  <div class="emoji" aria-hidden="true">🎂</div>
+  <h1>Happy Birthday</h1>
+  <p class="hint" id="reveal" aria-hidden="true">Українська<small>Ukrainien</small></p>
+
+  <button id="play" type="button" aria-label="Lecture">
+    <svg id="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+  </button>
+
+  <div class="progress">
+    <div id="bar" role="progressbar" aria-label="Progression"><div id="fill"></div></div>
+    <div class="times"><span id="cur">0:00</span><span id="dur">--:--</span></div>
+  </div>
+  <p id="error">Impossible de lire l'audio. Vérifie ta connexion et réessaie.</p>
+
+  <audio id="audio" src="Ukraine.mp3" preload="metadata"></audio>
+  <noscript><audio controls src="Ukraine.mp3"></audio></noscript>
+</main>
+
+<script>
+(function () {
+  var audio = document.getElementById('audio');
+  var btn = document.getElementById('play');
+  var fill = document.getElementById('fill');
+  var bar = document.getElementById('bar');
+  var cur = document.getElementById('cur');
+  var dur = document.getElementById('dur');
+  var err = document.getElementById('error');
+  var reveal = document.getElementById('reveal');
+
+  function fmt(s) {
+    if (!isFinite(s)) return '--:--';
+    var m = Math.floor(s / 60);
+    var r = Math.floor(s % 60);
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+
+  btn.addEventListener('click', function () {
+    if (audio.paused) {
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () { err.style.display = 'block'; });
+    } else {
+      audio.pause();
+    }
+  });
+
+  audio.addEventListener('play', function () {
+    btn.classList.add('playing');
+    reveal.classList.add('show');
+    reveal.removeAttribute('aria-hidden');
+    btn.setAttribute('aria-label', 'Pause');
+  });
+  audio.addEventListener('pause', function () {
+    btn.classList.remove('playing');
+    btn.setAttribute('aria-label', 'Lecture');
+  });
+  audio.addEventListener('ended', function () {
+    btn.classList.remove('playing');
+    btn.setAttribute('aria-label', 'Lecture');
+    fill.style.width = '0%';
+    cur.textContent = '0:00';
+  });
+  audio.addEventListener('loadedmetadata', function () { dur.textContent = fmt(audio.duration); });
+  audio.addEventListener('timeupdate', function () {
+    cur.textContent = fmt(audio.currentTime);
+    if (audio.duration) fill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+  });
+  audio.addEventListener('error', function () { err.style.display = 'block'; });
+
+  bar.addEventListener('click', function (e) {
+    if (!audio.duration) return;
+    var rect = bar.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+  });
+})();
+</script>
+</body>
+</html>

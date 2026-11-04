@@ -6,114 +6,118 @@
 <title>Happy Birthday</title>
 <style>
   :root {
-    --bg: #fff7ed;
-    --ink: #3b1d0a;
-    --muted: #8a6a52;
-    --accent: #f97316;
-    --accent-dark: #c2410c;
-    --track: #fed7aa;
+    --bg:#fff7ed; --ink:#3b1d0a; --muted:#8a6a52; --accent:#f97316; --track:#fed7aa;
+    --play-bg:#c2410c; --play-ink:#ffffff; --play-muted:rgba(255,255,255,0.85);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1c1209;
-      --ink: #ffedd5;
-      --muted: #c9a98c;
-      --accent: #fb923c;
-      --accent-dark: #fdba74;
-      --track: #4a2c12;
+      --bg:#1c1209; --ink:#ffedd5; --muted:#c9a98c; --accent:#fb923c; --track:#4a2c12;
+      --play-bg:#fb923c; --play-ink:#1c1209; --play-muted:rgba(28,18,9,0.75);
     }
   }
   * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
+  html, body { margin: 0; min-height: 100%; }
   body {
-    background: var(--bg);
-    color: var(--ink);
+    background: var(--bg); color: var(--ink);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 16px;
+    display: flex; justify-content: center; padding: 40px 16px;
   }
-  main {
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-  }
+  main { width: 100%; max-width: 420px; text-align: center; }
   .emoji { font-size: 56px; line-height: 1; margin-bottom: 12px; }
   h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.01em; }
-  .hint { color: var(--muted); margin: 0 0 36px; font-size: 16px; }
-  #play {
-    width: 128px;
-    height: 128px;
-    border-radius: 50%;
-    border: 0;
-    background: var(--accent);
-    color: #fff;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 28px rgba(249, 115, 22, 0.35);
-    transition: transform 0.12s ease;
-    -webkit-tap-highlight-color: transparent;
+  .hint { color: var(--muted); margin: 0; font-size: 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+  .item {
+    border: 0; border-radius: 18px; background: var(--track); color: var(--ink);
+    min-height: 120px; padding: 12px; font: inherit; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    -webkit-tap-highlight-color: transparent; transition: transform 0.12s ease;
   }
-  #play:active { transform: scale(0.95); }
-  #play:focus-visible { outline: 4px solid var(--accent-dark); outline-offset: 4px; }
-  #play svg { width: 56px; height: 56px; fill: currentColor; }
-  #icon-pause { display: none; }
-  #play.playing #icon-play { display: none; }
-  #play.playing #icon-pause { display: block; }
-  .progress { margin-top: 40px; }
-  #bar {
-    width: 100%;
-    height: 8px;
-    border-radius: 4px;
-    background: var(--track);
-    overflow: hidden;
-    cursor: pointer;
-  }
+  .item:active { transform: scale(0.97); }
+  .item:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
+  .num { font-size: 36px; font-weight: 700; line-height: 1; }
+  .name { display: none; font-size: 21px; font-weight: 700; line-height: 1.15; }
+  .fr { display: block; margin-top: 2px; font-size: 13px; font-weight: 400; color: var(--muted); }
+  .item.revealed .num { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .item.revealed .name { display: block; }
+  .ico { width: 22px; height: 22px; fill: currentColor; margin-top: 4px; }
+  .ico-pause { display: none; }
+  .item.playing { background: var(--play-bg); color: var(--play-ink); }
+  .item.playing .num, .item.playing .fr { color: var(--play-muted); }
+  .item.playing .ico-play { display: none; }
+  .item.playing .ico-pause { display: block; }
+  #progress { display: none; margin-top: 28px; }
+  #bar { width: 100%; height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; cursor: pointer; }
   #fill { height: 100%; width: 0%; background: var(--accent); }
-  .times {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 8px;
-    font-size: 14px;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-  #error { color: var(--accent-dark); margin-top: 20px; display: none; }
+  .times { display: flex; justify-content: space-between; margin-top: 8px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #error { display: none; margin-top: 16px; color: var(--play-bg); }
 </style>
 </head>
 <body>
 <main>
   <div class="emoji" aria-hidden="true">🎂</div>
   <h1>Happy Birthday</h1>
-  <p class="hint">Appuie sur le bouton pour écouter</p>
+  <p class="hint">Appuie sur un numéro</p>
 
-  <button id="play" type="button" aria-label="Lecture">
-    <svg id="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-    <svg id="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
-  </button>
+  <div class="grid">
+    <button class="item" type="button" data-file="Anglais.mp3" aria-label="Version 1">
+      <span class="num">1</span>
+      <span class="name">English<span class="fr">Anglais</span></span>
+      <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button class="item" type="button" data-file="Chinois.mp3" aria-label="Version 2">
+      <span class="num">2</span>
+      <span class="name">中文<span class="fr">Chinois</span></span>
+      <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button class="item" type="button" data-file="Italien.mp3" aria-label="Version 3">
+      <span class="num">3</span>
+      <span class="name">Italiano<span class="fr">Italien</span></span>
+      <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button class="item" type="button" data-file="Swahili.mp3" aria-label="Version 4">
+      <span class="num">4</span>
+      <span class="name">Kiswahili<span class="fr">Swahili</span></span>
+      <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button class="item" type="button" data-file="Turc.mp3" aria-label="Version 5">
+      <span class="num">5</span>
+      <span class="name">Türkçe<span class="fr">Turc</span></span>
+      <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button class="item" type="button" data-file="Ukraine.mp3" aria-label="Version 6">
+      <span class="num">6</span>
+      <span class="name">Українська<span class="fr">Ukrainien</span></span>
+      <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+  </div>
 
-  <div class="progress">
+  <div id="progress">
     <div id="bar" role="progressbar" aria-label="Progression"><div id="fill"></div></div>
     <div class="times"><span id="cur">0:00</span><span id="dur">--:--</span></div>
   </div>
   <p id="error">Impossible de lire l'audio. Vérifie ta connexion et réessaie.</p>
 
-  <audio id="audio" src="happy-birthday.mp3" preload="metadata"></audio>
-  <noscript><audio controls src="happy-birthday.mp3"></audio></noscript>
+  <audio id="audio" preload="none"></audio>
 </main>
 
 <script>
 (function () {
   var audio = document.getElementById('audio');
-  var btn = document.getElementById('play');
-  var fill = document.getElementById('fill');
+  var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
+  var prog = document.getElementById('progress');
   var bar = document.getElementById('bar');
+  var fill = document.getElementById('fill');
   var cur = document.getElementById('cur');
   var dur = document.getElementById('dur');
   var err = document.getElementById('error');
+  var current = null;
 
   function fmt(s) {
     if (!isFinite(s)) return '--:--';
@@ -121,27 +125,35 @@
     var r = Math.floor(s % 60);
     return m + ':' + (r < 10 ? '0' : '') + r;
   }
+  function showErr() { err.style.display = 'block'; }
+  function play() {
+    var p = audio.play();
+    if (p && p.catch) p.catch(showErr);
+  }
 
-  btn.addEventListener('click', function () {
-    if (audio.paused) {
-      var p = audio.play();
-      if (p && p.catch) p.catch(function () { err.style.display = 'block'; });
-    } else {
-      audio.pause();
-    }
+  items.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.classList.add('revealed');
+      if (current === btn) {
+        if (audio.paused) { play(); } else { audio.pause(); }
+        return;
+      }
+      items.forEach(function (b) { b.classList.remove('playing'); });
+      current = btn;
+      err.style.display = 'none';
+      fill.style.width = '0%';
+      cur.textContent = '0:00';
+      dur.textContent = '--:--';
+      prog.style.display = 'block';
+      audio.src = btn.getAttribute('data-file');
+      play();
+    });
   });
 
-  audio.addEventListener('play', function () {
-    btn.classList.add('playing');
-    btn.setAttribute('aria-label', 'Pause');
-  });
-  audio.addEventListener('pause', function () {
-    btn.classList.remove('playing');
-    btn.setAttribute('aria-label', 'Lecture');
-  });
+  audio.addEventListener('play', function () { if (current) current.classList.add('playing'); });
+  audio.addEventListener('pause', function () { if (current) current.classList.remove('playing'); });
   audio.addEventListener('ended', function () {
-    btn.classList.remove('playing');
-    btn.setAttribute('aria-label', 'Lecture');
+    if (current) current.classList.remove('playing');
     fill.style.width = '0%';
     cur.textContent = '0:00';
   });
@@ -150,7 +162,7 @@
     cur.textContent = fmt(audio.currentTime);
     if (audio.duration) fill.style.width = (audio.currentTime / audio.duration * 100) + '%';
   });
-  audio.addEventListener('error', function () { err.style.display = 'block'; });
+  audio.addEventListener('error', function () { if (audio.getAttribute('src')) showErr(); });
 
   bar.addEventListener('click', function (e) {
     if (!audio.duration) return;
