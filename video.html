@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bonjour</title>
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{min-height:100vh;display:flex;align-items:center;justify-content:center;
+       font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+       background:linear-gradient(160deg,#1e3a5f,#4a2c6b);color:#fff;padding:24px}
+  .card{width:100%;max-width:360px;background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
+        border-radius:24px;padding:36px 28px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+  .wave{display:flex;justify-content:center;align-items:flex-end;gap:5px;height:48px;margin-bottom:24px}
+  .wave span{width:6px;height:12px;background:#fff;border-radius:3px;opacity:.8}
+  .playing .wave span{animation:w 1s ease-in-out infinite}
+  .wave span:nth-child(2){animation-delay:.15s}.wave span:nth-child(3){animation-delay:.3s}
+  .wave span:nth-child(4){animation-delay:.45s}.wave span:nth-child(5){animation-delay:.6s}
+  @keyframes w{50%{height:46px}}
+  h1{font-size:1.8rem;margin-bottom:28px}
+  #play{width:84px;height:84px;border-radius:50%;border:none;background:#fff;color:#4a2c6b;
+        cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;
+        box-shadow:0 8px 20px rgba(0,0,0,.25);transition:transform .15s}
+  #play:active{transform:scale(.93)}
+  #play svg{width:36px;height:36px}
+  input[type=range]{width:100%;accent-color:#fff;cursor:pointer}
+  .time{display:flex;justify-content:space-between;font-size:.85rem;opacity:.8;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="wave"><span></span><span></span><span></span><span></span><span></span></div>
+  <h1>Bonjour 👋</h1>
+  <button id="play" aria-label="Lecture">
+    <svg id="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+  <input type="range" id="seek" min="0" max="100" value="0" step="0.1">
+  <div class="time"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+</div>
+<audio id="a" src="videobonjour.mp4" preload="metadata"></audio>
+<script>
+  const a=document.getElementById('a'),btn=document.getElementById('play'),ico=document.getElementById('ico'),
+        seek=document.getElementById('seek'),cur=document.getElementById('cur'),dur=document.getElementById('dur'),
+        card=document.getElementById('card');
+  const PLAY='<path d="M8 5v14l11-7z"/>',PAUSE='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+  const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
+  btn.onclick=()=>a.paused?a.play():a.pause();
+  a.onplay=()=>{ico.innerHTML=PAUSE;card.classList.add('playing')};
+  a.onpause=a.onended=()=>{ico.innerHTML=PLAY;card.classList.remove('playing')};
+  a.onloadedmetadata=()=>dur.textContent=fmt(a.duration);
+  a.ontimeupdate=()=>{cur.textContent=fmt(a.currentTime);if(a.duration)seek.value=a.currentTime/a.duration*100};
+  seek.oninput=()=>{if(a.duration)a.currentTime=seek.value/100*a.duration};
+</script>
+</body>
+</html>
